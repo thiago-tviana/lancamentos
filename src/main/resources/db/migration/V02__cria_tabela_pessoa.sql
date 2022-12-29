@@ -1,0 +1,9 @@
+CREATE TABLE pessoa (
+    id INT PRIMARY KEY AUTO_INCREMENT NOT NULL,
+    nome VARCHAR(50) NOT NULL,
+    ativa BOOLEAN NOT NULL,
+    logradouro VARCHAR(50) NOT NULL,
+    bairro VARCHAR(50) NOT NULL,
+    localidade VARCHAR(50) NOT NULL,
+    uf VARCHAR(50) NOT NULL
+);
