@@ -1,51 +1,59 @@
 package com.bora.lancamentos.controller
 
 import com.bora.lancamentos.model.Categoria
+import com.bora.lancamentos.repository.CategoriaRepository
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder
+import java.util.*
 
 @RestController
 @RequestMapping("/categorias")
-class CategoriaController {
-
-    var categorias = mutableListOf<Categoria>(
-        Categoria(1, "Lazer"),
-        Categoria(2, "Educação"),
-        Categoria(3, "Mercado"),
-        Categoria(4, "Super Mercado"),
-    )
+class CategoriaController(
+    val categoriaRepository: CategoriaRepository
+) {
 
     @GetMapping
     fun listar(@RequestParam nome: String?): List<Categoria> {
-        nome?.let {
-            return categorias.filter { it.nome.contains(nome, true) }
+        return if (nome.isNullOrBlank()) {
+            categoriaRepository.findAll()
+        } else {
+            categoriaRepository.findByNomeContainsIgnoreCase(nome)
         }
-        return categorias
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun criar(@RequestBody categoria: Categoria) {
-        categoria.id = categorias.size.toLong() + 1
-        categorias.add(categoria)
+    fun criar(@RequestBody categoria: Categoria): ResponseEntity<Categoria> {
+        val categoriaNova = categoriaRepository.save(categoria)
+
+        val uri = ServletUriComponentsBuilder.fromCurrentRequestUri()
+            .path("/{id}").buildAndExpand(categoriaNova.id).toUri()
+
+        return ResponseEntity.created(uri).body(categoriaNova);
     }
 
     @GetMapping("/{id}")
-    fun buscarPorId(@PathVariable id: Long): Categoria = categorias.first { it.id == id }
+    fun buscarPorId(@PathVariable id: Long): ResponseEntity<Categoria> =
+        categoriaRepository.findById(id).map {
+            ResponseEntity.ok(it)
+        }.orElse(ResponseEntity.notFound().build())
 
     @PutMapping("/{id}")
-    fun atualizar(@PathVariable id: Long, @RequestBody categoria: Categoria): Categoria {
-        categorias.filter { it.id == id}.first().let {
-            it.nome = categoria.nome
-            return it
-        }
-    }
+    fun atualizar(@PathVariable id: Long, @RequestBody categoria: Categoria): ResponseEntity<Categoria> =
+        categoriaRepository.findById(id).map {
+            val categoriaAtualizada = it.copy(
+                nome = categoria.nome
+            )
+            ResponseEntity.ok(categoriaRepository.save(categoriaAtualizada))
+        }.orElse(ResponseEntity.notFound().build())
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun remover(@PathVariable("id") cod: Long) {
-        val categoria = categorias.filter { it.id == cod }.first()
-        categorias.remove(categoria)
-    }
+    fun remover(@PathVariable id: Long): ResponseEntity<Void> =
+        categoriaRepository.findById(id).map {
+            categoriaRepository.deleteById(id)
+            ResponseEntity<Void>(HttpStatus.NO_CONTENT)
+        }.orElse(ResponseEntity<Void>(HttpStatus.NOT_FOUND))
+
 
 }
