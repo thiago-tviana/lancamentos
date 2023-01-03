@@ -8,7 +8,7 @@ data class Categoria(
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
+    var id: Long? = null,
 
     @Column(name = "nome")
     var nome: String

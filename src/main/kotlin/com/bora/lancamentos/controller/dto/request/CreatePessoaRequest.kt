@@ -1,4 +1,4 @@
-package com.bora.lancamentos.controller
+package com.bora.lancamentos.controller.dto.request
 
 data class CreatePessoaRequest(
     var nome: String,

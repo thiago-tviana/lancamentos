@@ -1,6 +1,6 @@
 package com.bora.lancamentos.controller
 
-import com.bora.lancamentos.model.Categoria
+import com.bora.lancamentos.controller.dto.request.CreatePessoaRequest
 import com.bora.lancamentos.model.Pessoa
 import com.bora.lancamentos.service.PessoaService
 import org.springframework.http.ResponseEntity

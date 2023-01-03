@@ -1,6 +1,6 @@
 package com.bora.lancamentos.service
 
-import com.bora.lancamentos.controller.CreatePessoaRequest
+import com.bora.lancamentos.controller.dto.request.CreatePessoaRequest
 import com.bora.lancamentos.model.Endereco
 import com.bora.lancamentos.model.Pessoa
 import com.bora.lancamentos.repository.PessoaRepository
