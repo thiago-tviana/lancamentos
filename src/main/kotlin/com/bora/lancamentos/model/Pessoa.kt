@@ -11,10 +11,10 @@ data class Pessoa(
     var id: Long?,
 
     @Column(name = "nome")
-    var nome: String,
+    var nome: String?,
 
     @Column(name = "ativa")
-    var ativa: Boolean = true,
+    var ativa: Boolean? = true,
 
     @Column(name = "endereco")
     @Embedded

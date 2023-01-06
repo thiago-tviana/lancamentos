@@ -11,5 +11,5 @@ data class Categoria(
     var id: Long? = null,
 
     @Column(name = "nome")
-    var nome: String
+    var nome: String?
 )
